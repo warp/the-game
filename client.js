@@ -14,7 +14,12 @@ var Client = (function () {
     key: 'bootstrap',
     value: function bootstrap() {
       var stage = new Stage();
+      var input = new InputListener();
       var socket = io('http://localhost:8080');
+
+      input.events.on('stateChange', function (state) {
+        socket.emit('inputState', state);
+      });
 
       socket.on('state', function (gameState) {
         new Painting(stage, gameState).perform();
@@ -29,6 +34,77 @@ var Client = (function () {
   }]);
 
   return Client;
+})();
+
+var EventStream = (function () {
+  function EventStream() {
+    _classCallCheck(this, EventStream);
+
+    this.listeners = {};
+  }
+
+  _createClass(EventStream, [{
+    key: 'on',
+    value: function on(eventName, callback) {
+      this.listeners[eventName] = this.listeners[eventName] || [];
+      this.listeners[eventName].push(callback);
+    }
+  }, {
+    key: 'broadcast',
+    value: function broadcast(eventName) {
+      for (var _len = arguments.length, data = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        data[_key - 1] = arguments[_key];
+      }
+
+      (this.listeners[eventName] || []).forEach(function (callback) {
+        callback.call(null, data);
+      });
+    }
+  }]);
+
+  return EventStream;
+})();
+
+var InputListener = (function () {
+  function InputListener() {
+    _classCallCheck(this, InputListener);
+
+    this.events = new EventStream();
+    this.state = {};
+    this.bindToEvents();
+  }
+
+  _createClass(InputListener, [{
+    key: 'keyCodeAction',
+    value: function keyCodeAction(keyCode) {
+      var keyCodeToActionMappings = {
+        38: 'thrust'
+      };
+
+      return keyCodeToActionMappings[keyCode];
+    }
+  }, {
+    key: 'bindToEvents',
+    value: function bindToEvents() {
+      window.addEventListener('keydown', this.setState(true));
+      window.addEventListener('keyup', this.setState(false));
+    }
+  }, {
+    key: 'setState',
+    value: function setState(value) {
+      return (function (event) {
+        var action = this.keyCodeAction(event.keyCode);
+
+        if (action) {
+          this.state[action] = value;
+        }
+
+        this.events.broadcast('stateChange', this.state);
+      }).bind(this);
+    }
+  }]);
+
+  return InputListener;
 })();
 
 var Painting = (function () {

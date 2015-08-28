@@ -11,11 +11,14 @@ app.listen(PORT)
 
 class Game {
   constructor() {
-    this.state = { ship: { x: 50, y: 50 } }
+    this.state = {
+      ship: { x: 200, y: 200, thrusting: false, acceleration: 0 }
+    }
   }
 
   tick() {
-    this.state.ship.y += 0.5
+    this.state.ship.acceleration += this.state.ship.thrusting ? -0.005 : 0.001
+    this.state.ship.y += this.state.ship.acceleration
   }
 }
 
@@ -42,7 +45,12 @@ io.on('connection', function (socket) {
     socket.emit('state', game.state);
   }, 20)
 
-  socket.on('thrust', function (data) {
-    console.log(data);
+
+  setInterval(function(){
+    console.log(game.state)
+  }, 1000)
+
+  socket.on('inputState', function (state) {
+    game.state.ship.thrusting = state[0].thrust
   });
 });
