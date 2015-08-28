@@ -10,4 +10,8 @@ Start a watcher:
 
     npm run dev
 
-Open `index.html`
+Start the server
+  
+    npm start
+
+Open `http://localhost:8080`
