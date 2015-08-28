@@ -51,6 +51,6 @@ io.on('connection', function (socket) {
   }, 1000)
 
   socket.on('inputState', function (state) {
-    game.state.ship.thrusting = state[0].thrust
+    game.state.ship.thrusting = state.thrust
   });
 });

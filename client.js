@@ -57,7 +57,7 @@ var EventStream = (function () {
       }
 
       (this.listeners[eventName] || []).forEach(function (callback) {
-        callback.call(null, data);
+        callback.call.apply(callback, [null].concat(data));
       });
     }
   }]);
