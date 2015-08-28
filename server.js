@@ -9,6 +9,16 @@ var io = socketIo(app)
 
 app.listen(PORT)
 
+class Game {
+  constructor() {
+    this.state = { ship: { x: 50, y: 50 } }
+  }
+
+  tick() {
+    this.state.ship.y += 0.5
+  }
+}
+
 console.log('Running on http://localhost:' + PORT)
 
 function handler (req, res) {
@@ -24,9 +34,15 @@ function handler (req, res) {
   });
 }
 
+var game = new Game()
+
 io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
+  setInterval(function(){
+    game.tick()
+    socket.emit('state', game.state);
+  }, 20)
+
+  socket.on('thrust', function (data) {
     console.log(data);
   });
 });

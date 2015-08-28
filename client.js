@@ -13,9 +13,12 @@ var Client = (function () {
   _createClass(Client, [{
     key: 'bootstrap',
     value: function bootstrap() {
-      this.stage = new Stage();
-      this.painter = new Painter(this.stage);
-      this.painter.paint({});
+      var stage = new Stage();
+      var socket = io('http://localhost:8080');
+
+      socket.on('state', function (gameState) {
+        new Painting(stage, gameState).perform();
+      });
     }
   }], [{
     key: 'bootstrap',
@@ -28,37 +31,68 @@ var Client = (function () {
   return Client;
 })();
 
-var Painter = (function () {
-  function Painter(stage) {
-    _classCallCheck(this, Painter);
+var Painting = (function () {
+  function Painting(stage, gameState) {
+    _classCallCheck(this, Painting);
 
     this.stage = stage;
+    this.context = stage.context;
+    this.gameState = gameState;
   }
 
-  _createClass(Painter, [{
-    key: 'paint',
-    value: function paint() {
+  _createClass(Painting, [{
+    key: 'perform',
+    value: function perform() {
       this.erase();
       this.drawBackground();
+      this.drawShip();
     }
   }, {
     key: 'erase',
     value: function erase() {
-      this.stage.draw(function (stage) {
-        this.clearRect(0, 0, stage.width(), stage.height());
+      this.draw(function (context, stage) {
+        context.clearRect(0, 0, stage.width(), stage.height());
+      });
+    }
+  }, {
+    key: 'drawShip',
+    value: function drawShip() {
+      var ship = this.gameState.ship;
+
+      this.draw(function (context) {
+        context.fillStyle = 'rgb(227, 61, 39)';
+        this.drawTriangle(ship.x, ship.y, 30);
+        context.fill();
       });
     }
   }, {
     key: 'drawBackground',
     value: function drawBackground() {
-      this.stage.draw(function (stage) {
-        this.fillStyle = 'rgb(227, 227, 227)';
-        this.fillRect(0, 0, stage.width(), stage.height());
+      this.draw(function (context, stage) {
+        context.fillStyle = 'rgb(227, 227, 227)';
+        context.fillRect(0, 0, stage.width(), stage.height());
       });
+    }
+  }, {
+    key: 'drawTriangle',
+    value: function drawTriangle(x, y, size) {
+      this.draw(function (context) {
+        context.beginPath();
+        context.moveTo(x, y - size / 2);
+        context.lineTo(x + size / 2, y + size / 2);
+        context.lineTo(x - size / 2, y + size / 2);
+      });
+    }
+  }, {
+    key: 'draw',
+    value: function draw(callback) {
+      this.context.save();
+      callback.call(this, this.context, this.stage);
+      this.context.restore();
     }
   }]);
 
-  return Painter;
+  return Painting;
 })();
 
 var Stage = (function () {
@@ -85,11 +119,6 @@ var Stage = (function () {
       window.addEventListener('resize', this.resize.bind(this));
     }
   }, {
-    key: 'draw',
-    value: function draw(callback) {
-      callback.call(this.context, this);
-    }
-  }, {
     key: 'width',
     value: function width() {
       return this.canvas.width;
@@ -111,11 +140,5 @@ var Stage = (function () {
 })();
 
 Client.bootstrap();
-
-var socket = io('http://localhost:8080');
-socket.on('news', function (data) {
-  console.log(data);
-  socket.emit('my other event', { my: 'data' });
-});
 
 },{}]},{},[1]);
