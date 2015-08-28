@@ -1,0 +1,17 @@
+{
+  "name": "the-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify lib/client.js -t babelify -o client.js",
+    "dev": "nodemon -w lib -e js -x 'npm run build'"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babelify": "^6.2.0",
+    "browserify": "^11.0.1",
+    "nodemon": "^1.4.1"
+  }
+}
