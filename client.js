@@ -17,7 +17,7 @@ var Client = (function () {
     value: function bootstrap() {
       var stage = new Stage();
       var input = new InputListener();
-      var socket = io('http://localhost:8080');
+      var socket = io(document.location.protocol + '//' + document.location.host);
 
       input.events.on('stateChange', function (state) {
         socket.emit('inputState', state);
