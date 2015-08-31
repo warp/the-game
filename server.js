@@ -41,5 +41,7 @@ io.on('connection', function (socket) {
 
   socket.on('inputState', function (state) {
     game.state.ship.thrusting = state.thrust
+    game.state.ship.left = state.left
+    game.state.ship.right = state.right
   });
 });
