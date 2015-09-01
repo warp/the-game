@@ -137,12 +137,14 @@ var Rendering = (function () {
   }, {
     key: 'drawShips',
     value: function drawShips() {
-      var ship = this.gameState.ships[0];
+      var _this = this;
 
-      this.draw(function (context) {
-        context.fillStyle = 'rgb(227, 61, 39)';
-        this.drawTriangle(ship.x, ship.y, 30, ship.angle);
-        context.fill();
+      this.gameState.ships.forEach(function (ship) {
+        _this.draw(function (context) {
+          context.fillStyle = 'rgb(227, 61, 39)';
+          this.drawTriangle(ship.x, ship.y, 30, ship.angle);
+          context.fill();
+        });
       });
     }
   }, {
