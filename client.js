@@ -17,15 +17,16 @@ var Client = (function () {
     value: function bootstrap() {
       var stage = new Stage(1000, 600);
       var input = new InputListener();
-      var socket = io(document.location.protocol + '//' + document.location.host);
+      var socket = new WebSocket(document.location.protocol.replace('http', 'ws') + '//' + document.location.host);
 
       input.events.on('stateChange', function (state) {
-        socket.emit('inputState', state);
+        socket.send(JSON.stringify({ 'inputState': state }));
       });
 
-      socket.on('state', function (gameState) {
+      socket.onmessage = function (message) {
+        var gameState = JSON.parse(message.data).state;
         new Rendering(stage, gameState).perform();
-      });
+      };
     }
   }], [{
     key: 'bootstrap',
