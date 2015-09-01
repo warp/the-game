@@ -24,7 +24,7 @@ var Client = (function () {
       });
 
       socket.on('state', function (gameState) {
-        new Painting(stage, gameState).perform();
+        new Rendering(stage, gameState).perform();
       });
     }
   }], [{
@@ -111,21 +111,21 @@ var InputListener = (function () {
   return InputListener;
 })();
 
-var Painting = (function () {
-  function Painting(stage, gameState) {
-    _classCallCheck(this, Painting);
+var Rendering = (function () {
+  function Rendering(stage, gameState) {
+    _classCallCheck(this, Rendering);
 
     this.stage = stage;
     this.context = stage.context;
     this.gameState = gameState;
   }
 
-  _createClass(Painting, [{
+  _createClass(Rendering, [{
     key: 'perform',
     value: function perform() {
       this.erase();
       this.drawBackground();
-      this.drawShip();
+      this.drawShips();
     }
   }, {
     key: 'erase',
@@ -135,9 +135,9 @@ var Painting = (function () {
       });
     }
   }, {
-    key: 'drawShip',
-    value: function drawShip() {
-      var ship = this.gameState.ship;
+    key: 'drawShips',
+    value: function drawShips() {
+      var ship = this.gameState.ships[0];
 
       this.draw(function (context) {
         context.fillStyle = 'rgb(227, 61, 39)';
@@ -181,7 +181,7 @@ var Painting = (function () {
     }
   }]);
 
-  return Painting;
+  return Rendering;
 })();
 
 var Stage = (function () {

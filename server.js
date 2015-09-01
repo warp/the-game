@@ -11,7 +11,7 @@ var io = socketIo(app)
 
 app.listen(PORT)
 
-console.log('Running on http://localhost:' + PORT)
+console.log('Running on port ' + PORT)
 
 function handler (req, res) {
   var path = '/' + (req.url.replace(/^\//, '') || 'index.html')
@@ -26,22 +26,23 @@ function handler (req, res) {
   });
 }
 
+const timeStepInMs = 20
+
 var game = new Game()
 
+setInterval(function() {
+  game.tick(timeStepInMs / 1000)
+  io.sockets.emit('state', game.state)
+}, timeStepInMs)
+
+setInterval(function(){
+  console.log(game.state)
+}, 1000)
+
 io.on('connection', function (socket) {
-  setInterval(function(){
-    game.tick(0.02)
-    socket.emit('state', game.state);
-  }, 20)
-
-
-  setInterval(function(){
-    console.log(game.state)
-  }, 1000)
-
   socket.on('inputState', function (state) {
-    game.state.ship.thrusting = state.thrust
-    game.state.ship.left = state.left
-    game.state.ship.right = state.right
+    game.state.ships[0].thrusting = state.thrust
+    game.state.ships[0].left = state.left
+    game.state.ships[0].right = state.right
   });
 });
