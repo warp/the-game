@@ -142,7 +142,7 @@ var Rendering = (function () {
       this.gameState.ships.forEach(function (ship) {
         _this.draw(function (context) {
           context.fillStyle = 'rgb(227, 61, 39)';
-          this.drawTriangle(ship.x, ship.y, 30, ship.angle);
+          this.drawTriangle(ship.x, ship.y, 30, ship.rotation);
           context.fill();
         });
       });
@@ -157,9 +157,9 @@ var Rendering = (function () {
     }
   }, {
     key: 'drawTriangle',
-    value: function drawTriangle(x, y, size, angle) {
-      var cos = Math.cos(-angle);
-      var sin = Math.sin(-angle);
+    value: function drawTriangle(x, y, size, rotation) {
+      var cos = Math.cos(-rotation);
+      var sin = Math.sin(-rotation);
 
       var path = [[0, -size / 2], [size / 2, size / 2], [-size / 2, size / 2]].map(function (_ref) {
         var _ref2 = _slicedToArray(_ref, 2);
