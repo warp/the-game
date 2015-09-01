@@ -160,18 +160,26 @@ var Rendering = (function () {
     value: function drawTriangle(x, y, size, angle) {
       var cos = Math.cos(-angle);
       var sin = Math.sin(-angle);
+
+      var path = [[0, -size / 2], [size / 2, size / 2], [-size / 2, size / 2]].map(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2);
+
+        var px = _ref2[0];
+        var py = _ref2[1];
+        return [px * cos - py * sin + x, px * sin + py * cos + y];
+      });
+
+      this.drawPath(path);
+    }
+  }, {
+    key: 'drawPath',
+    value: function drawPath(points) {
       this.draw(function (context) {
         context.beginPath();
-        var path = [[0, -size / 2], [size / 2, size / 2], [-size / 2, size / 2]].map(function (_ref) {
-          var _ref2 = _slicedToArray(_ref, 2);
-
-          var px = _ref2[0];
-          var py = _ref2[1];
-          return [px * cos - py * sin + x, px * sin + py * cos + y];
+        context.moveTo.apply(context, points.shift());
+        points.forEach(function (point) {
+          return context.lineTo.apply(context, point);
         });
-        context.moveTo(path[0][0], path[0][1]);
-        context.lineTo(path[1][0], path[1][1]);
-        context.lineTo(path[2][0], path[2][1]);
       });
     }
   }, {
