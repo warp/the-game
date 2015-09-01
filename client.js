@@ -3,24 +3,26 @@
 
 var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
 
+var _bind = Function.prototype.bind;
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var Client = (function () {
+window.Client = (function () {
   function Client() {
     _classCallCheck(this, Client);
   }
 
   _createClass(Client, [{
-    key: 'bootstrap',
-    value: function bootstrap() {
+    key: 'start',
+    value: function start(name) {
       var stage = new Stage(1000, 600);
       var input = new InputListener();
       var socket = new WebSocket(document.location.protocol.replace('http', 'ws') + '//' + document.location.host);
 
       input.events.on('stateChange', function (state) {
-        socket.send(JSON.stringify({ 'inputState': state }));
+        socket.send(JSON.stringify({ inputState: state }));
       });
 
       socket.onmessage = function (message) {
@@ -29,10 +31,14 @@ var Client = (function () {
       };
     }
   }], [{
-    key: 'bootstrap',
-    value: function bootstrap() {
-      var client = new Client();
-      client.bootstrap();
+    key: 'start',
+    value: function start() {
+      for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
+        params[_key] = arguments[_key];
+      }
+
+      var client = new (_bind.apply(Client, [null].concat(params)))();
+      client.start();
     }
   }]);
 
@@ -55,8 +61,8 @@ var EventStream = (function () {
   }, {
     key: 'broadcast',
     value: function broadcast(eventName) {
-      for (var _len = arguments.length, data = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        data[_key - 1] = arguments[_key];
+      for (var _len2 = arguments.length, data = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        data[_key2 - 1] = arguments[_key2];
       }
 
       (this.listeners[eventName] || []).forEach(function (callback) {
@@ -231,7 +237,5 @@ var Stage = (function () {
 
   return Stage;
 })();
-
-Client.bootstrap();
 
 },{}]},{},[1]);
