@@ -18,9 +18,50 @@
         align-items: center;
         -webkit-align-items: center;
       }
+
+      input {
+        padding: 1em 2em;
+        margin: 0;
+        border: none;
+        font-size: 2em;
+      }
+
+      input:focus {
+        outline: none;
+      }
+
+      input[type="submit"] {
+        background: rgb(209, 41, 182);
+        color: white;
+      }
+
+      input[type="submit"]:hover {
+        cursor: pointer;
+        background: url('http://media.giphy.com/media/kkoRgXbTCPY3K/giphy.gif');
+      }
+
+      input[type="submit"]:disabled {
+        background: rgb(143, 143, 143);
+        color: rgb(199, 199, 199);
+      }
+
+      input:first-of-type {
+        border-top-left-radius: 2em;
+        border-bottom-left-radius: 2em;
+      }
+
+      input:last-of-type {
+        border-top-right-radius: 2em;
+        border-bottom-right-radius: 2em;
+      }
     </style>
   </head>
   <body>
+    <form onsubmit="this.style.display = 'none'; try { Client.start(name.value) } catch(e) { }; return false;">
+      <input placeholder="Your name" id="name" onkeyup="this.value = this.value.replace(/[^A-Za-z]/, ''); this.value.length ? go.removeAttribute('disabled') : go.setAttribute('disabled', true)" maxlength="10" autofocus="true">
+      <input type="submit" value="Launch!" id="go" disabled>
+    </form>
+
     <script src="client.js"></script>
   </body>
 </html>
