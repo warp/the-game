@@ -15,7 +15,7 @@ var Client = (function () {
   _createClass(Client, [{
     key: 'bootstrap',
     value: function bootstrap() {
-      var stage = new Stage();
+      var stage = new Stage(1000, 600);
       var input = new InputListener();
       var socket = io(document.location.protocol + '//' + document.location.host);
 
@@ -131,7 +131,7 @@ var Rendering = (function () {
     key: 'erase',
     value: function erase() {
       this.draw(function (context, stage) {
-        context.clearRect(0, 0, stage.width(), stage.height());
+        context.clearRect(0, 0, stage.width, stage.height);
       });
     }
   }, {
@@ -152,7 +152,7 @@ var Rendering = (function () {
     value: function drawBackground() {
       this.draw(function (context, stage) {
         context.fillStyle = 'rgb(227, 227, 227)';
-        context.fillRect(0, 0, stage.width(), stage.height());
+        context.fillRect(0, 0, stage.width, stage.height);
       });
     }
   }, {
@@ -195,43 +195,36 @@ var Rendering = (function () {
 })();
 
 var Stage = (function () {
-  function Stage() {
+  function Stage(width, height) {
     _classCallCheck(this, Stage);
 
     this.materialize();
-    this.bindToEvents();
+    this.width = width;
+    this.height = height;
   }
 
   _createClass(Stage, [{
     key: 'materialize',
     value: function materialize() {
-      this.parent = document.body;
       this.canvas = document.createElement('canvas');
       this.context = this.canvas.getContext('2d');
-
-      this.parent.appendChild(this.canvas);
-      this.resize();
-    }
-  }, {
-    key: 'bindToEvents',
-    value: function bindToEvents() {
-      window.addEventListener('resize', this.resize.bind(this));
+      document.body.appendChild(this.canvas);
     }
   }, {
     key: 'width',
-    value: function width() {
+    set: function set(value) {
+      this.canvas.width = value;
+    },
+    get: function get() {
       return this.canvas.width;
     }
   }, {
     key: 'height',
-    value: function height() {
+    set: function set(value) {
+      this.canvas.height = value;
+    },
+    get: function get() {
       return this.canvas.height;
-    }
-  }, {
-    key: 'resize',
-    value: function resize() {
-      this.canvas.width = this.parent.offsetWidth;
-      this.canvas.height = this.parent.offsetHeight;
     }
   }]);
 
