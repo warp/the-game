@@ -1,5 +1,5 @@
 import http from 'http'
-import socketIo from 'socket.io'
+import ws from 'ws'
 import fs from 'fs'
 
 import Game from './lib/game'
@@ -7,7 +7,7 @@ import Game from './lib/game'
 const PORT = 8080
 
 var app = http.createServer(handler)
-var io = socketIo(app)
+var wss = new ws.Server({server: app})
 
 app.listen(PORT)
 
@@ -32,19 +32,23 @@ var game = new Game()
 
 setInterval(function() {
   game.tick(timeStepInMs / 1000)
-  io.sockets.emit('state', game.state)
+  wss.clients.forEach(function(client) {
+    client.send(JSON.stringify({"state": game.state}))
+  })
 }, timeStepInMs)
 
 setInterval(function(){
   console.log(game.state)
 }, 1000)
 
-io.on('connection', function (socket) {
-  let id = socket.id
-  console.log('Connection registered at', id)
+wss.on('connection', function (socket) {
+  console.log('Connection registered')
+
   let ship = game.addShip()
 
-  socket.on('inputState', function (state) {
+  socket.on('message', function (message) {
+    let state = JSON.parse(message).inputState
+
     ship.thrusting = state.thrust
     ship.left = state.left
     ship.right = state.right
