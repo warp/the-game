@@ -141,7 +141,7 @@ var Rendering = (function () {
 
       this.gameState.ships.forEach(function (ship) {
         _this.draw(function (context) {
-          context.fillStyle = 'rgb(227, 61, 39)';
+          context.fillStyle = ship.colour;
           this.drawTriangle(ship.x, ship.y, 30, ship.rotation);
           context.fill();
         });
