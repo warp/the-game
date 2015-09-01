@@ -40,6 +40,9 @@ setInterval(function(){
 }, 1000)
 
 io.on('connection', function (socket) {
+  console.log('Connection registered at', socket.id)
+  game.addShip(socket.id)
+
   socket.on('inputState', function (state) {
     game.state.ships[0].thrusting = state.thrust
     game.state.ships[0].left = state.left
