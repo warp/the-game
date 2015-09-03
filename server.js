@@ -17,8 +17,8 @@ function handler (req, res) {
   var path = '/' + (req.url.replace(/^\//, '') || 'index.html')
   fs.readFile(__dirname + path, function (err, data) {
     if (err) {
-      res.writeHead(500);
-      return res.end('Error loading ' + path);
+      res.writeHead(404);
+      return res.end('Not found: ' + path);
     }
 
     res.writeHead(200);
