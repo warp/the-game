@@ -4,10 +4,10 @@ import fs from 'fs'
 
 import Game from './lib/game'
 
-const PORT = 8080
+const PORT = process.env.PORT || 8080
 
 var app = http.createServer(handler)
-var wss = new ws.Server({server: app})
+var wss = new ws.Server({ server: app })
 
 app.listen(PORT)
 
