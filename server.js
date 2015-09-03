@@ -31,7 +31,7 @@ const timeStepInMs = 20
 var game = new Game()
 
 setInterval(function() {
-  game.tick(timeStepInMs / 1000)
+  game.tick(timeStepInMs / 500)
   game.ships.forEach(function(ship) {
     ship.client.send(JSON.stringify({"state": game.state}))
   })
