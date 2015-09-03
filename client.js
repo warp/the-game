@@ -19,13 +19,16 @@ window.Client = (function () {
     value: function start(name) {
       var stage = new Stage(1000, 600);
       var input = new InputListener();
-      var socket = new WebSocket(document.location.protocol.replace('http', 'ws') + '//' + document.location.host);
+      var client = new WebSocket(document.location.protocol.replace('http', 'ws') + '//' + document.location.host);
 
+      window.addEventListener('beforeunload', function () {
+        client.close();
+      });
       input.events.on('stateChange', function (state) {
-        socket.send(JSON.stringify({ inputState: state }));
+        client.send(JSON.stringify({ inputState: state }));
       });
 
-      socket.onmessage = function (message) {
+      client.onmessage = function (message) {
         var gameState = JSON.parse(message.data).state;
         new Rendering(stage, gameState).perform();
       };

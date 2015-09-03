@@ -32,8 +32,8 @@ var game = new Game()
 
 setInterval(function() {
   game.tick(timeStepInMs / 1000)
-  wss.clients.forEach(function(client) {
-    client.send(JSON.stringify({"state": game.state}))
+  game.ships.forEach(function(ship) {
+    ship.client.send(JSON.stringify({"state": game.state}))
   })
 }, timeStepInMs)
 
@@ -41,16 +41,21 @@ setInterval(function(){
   console.log(game.state)
 }, 1000)
 
-wss.on('connection', function (socket) {
+wss.on('connection', function (client) {
   console.log('Connection registered')
 
-  let ship = game.addShip()
+  let ship = game.addShip(client)
 
-  socket.on('message', function (message) {
+  client.on('message', function (message) {
     let state = JSON.parse(message).inputState
 
     ship.thrusting = state.thrust
     ship.left = state.left
     ship.right = state.right
   });
+
+  client.on('close', function() {
+    game.removeShip(ship)
+    console.log('Connection closed')
+  })
 });
