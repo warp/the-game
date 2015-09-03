@@ -4,10 +4,10 @@ import fs from 'fs'
 
 import Game from './lib/game'
 
-const PORT = 8080
+const PORT = process.env.PORT || 8080
 
 var app = http.createServer(handler)
-var wss = new ws.Server({server: app})
+var wss = new ws.Server({ server: app })
 
 app.listen(PORT)
 
@@ -17,8 +17,8 @@ function handler (req, res) {
   var path = '/' + (req.url.replace(/^\//, '') || 'index.html')
   fs.readFile(__dirname + path, function (err, data) {
     if (err) {
-      res.writeHead(500);
-      return res.end('Error loading ' + path);
+      res.writeHead(404);
+      return res.end('Not found: ' + path);
     }
 
     res.writeHead(200);
