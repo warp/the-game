@@ -41,10 +41,6 @@ setInterval(function() {
   })
 }, timeStepInMs)
 
-setInterval(function(){
-  console.log(game.state)
-}, 1000)
-
 wss.on('connection', function (client) {
   console.log('Connection registered')
   let ship
