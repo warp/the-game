@@ -191,13 +191,17 @@ var Rendering = (function () {
 
       this.gameState.ships.forEach(function (ship) {
         _this2.draw(function (context) {
-          context.fillStyle = ship.colour;
-          this.drawTriangle(ship.x, ship.y, 30, ship.rotation);
-          context.fill();
-          this.drawText(ship.name, ship.x, Math.max(ship.y - 25, 10), ship.colour);
+
           if (ship.doge) {
             this.drawDoge(ship);
+          } else {
+            context.fillStyle = ship.colour;
+            this.drawTriangle(ship.x, ship.y, 30, ship.rotation);
+            context.fill();
           }
+
+          this.drawText(ship.name, ship.x, Math.max(ship.y - 25, 10), ship.colour);
+
           if (ship.thrusting) {
             var _rotatePoint = this.rotatePoint(-ship.rotation, 0, 0)([0, 10]);
 
@@ -221,8 +225,19 @@ var Rendering = (function () {
   }, {
     key: 'drawDoge',
     value: function drawDoge(ship) {
+      this.drawImage(dogeImage, ship.x, ship.y, 96, 51, ship.rotation);
+    }
+
+    // Draw image whose center is x, y
+  }, {
+    key: 'drawImage',
+    value: function drawImage(image, x, y, width, height) {
+      var rotation = arguments.length <= 5 || arguments[5] === undefined ? 0 : arguments[5];
+
       this.draw(function (context) {
-        context.drawImage(dogeImage, ship.x, ship.y - 10, 64, 34);
+        context.translate(x, y);
+        context.rotate(-rotation);
+        context.drawImage(image, -width / 2, -height / 2, width, height);
       });
     }
 
