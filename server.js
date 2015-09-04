@@ -15,6 +15,16 @@ console.log('Running on port ' + PORT)
 
 function handler (req, res) {
   var path = '/' + (req.url.replace(/^\//, '') || 'index.html')
+
+  console.log(req.method, path)
+
+  if (path == '/debug.json') {
+    let debug = {
+      state: game.state
+    }
+    return res.end(JSON.stringify(debug))
+  }
+
   fs.readFile(__dirname + path, function (err, data) {
     if (err) {
       res.writeHead(404);
@@ -40,10 +50,6 @@ setInterval(function() {
     }
   })
 }, timeStepInMs)
-
-setInterval(function(){
-  console.log(game.state)
-}, 1000)
 
 wss.on('connection', function (client) {
   console.log('Connection registered')
