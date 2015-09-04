@@ -16,6 +16,8 @@ console.log('Running on port ' + PORT)
 function handler (req, res) {
   var path = '/' + (req.url.replace(/^\//, '') || 'index.html')
 
+  console.log(req.method, path)
+
   if (path == '/debug.json') {
     let debug = {
       state: game.state
