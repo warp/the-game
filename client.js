@@ -10,13 +10,15 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 window.Client = (function () {
-  function Client() {
+  function Client(name) {
     _classCallCheck(this, Client);
+
+    this.name = name;
   }
 
   _createClass(Client, [{
     key: 'start',
-    value: function start(name) {
+    value: function start() {
       var stage = new Stage(1000, 600);
       var input = new InputListener();
       var client = new WebSocket(document.location.protocol.replace('http', 'ws') + '//' + document.location.host);
@@ -24,9 +26,14 @@ window.Client = (function () {
       window.addEventListener('beforeunload', function () {
         client.close();
       });
-      input.events.on('stateChange', function (state) {
-        client.send(JSON.stringify({ inputState: state }));
-      });
+
+      client.onopen = (function () {
+        client.send(JSON.stringify({ join: { name: this.name } }));
+
+        input.events.on('stateChange', function (state) {
+          client.send(JSON.stringify({ inputState: state }));
+        });
+      }).bind(this);
 
       client.onmessage = function (message) {
         var gameState = JSON.parse(message.data).state;
