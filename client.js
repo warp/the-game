@@ -161,14 +161,27 @@ var Rendering = (function () {
           context.fillStyle = ship.colour;
           this.drawTriangle(ship.x, ship.y, 30, ship.rotation);
           context.fill();
+          this.drawText(ship.name, ship.x, Math.max(ship.y - 25, 10), ship.colour);
         });
+      });
+    }
+
+    // Draw text whose center is at x
+  }, {
+    key: 'drawText',
+    value: function drawText(text, x, y, colour) {
+      this.draw(function (context) {
+        var measurement = context.measureText(text);
+        context.fillStyle = colour;
+        context.font = "bold 10pt Helvetica Neue";
+        context.fillText(text, x - measurement.width / 2, y);
       });
     }
   }, {
     key: 'drawBackground',
     value: function drawBackground() {
       this.draw(function (context, stage) {
-        context.fillStyle = 'rgb(227, 227, 227)';
+        context.fillStyle = 'white';
         context.fillRect(0, 0, stage.width, stage.height);
       });
     }

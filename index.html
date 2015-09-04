@@ -56,9 +56,9 @@
       }
     </style>
   </head>
-  <body>
-    <form onsubmit="this.style.display = 'none'; try { Client.start(name.value) } catch(e) { }; return false;">
-      <input placeholder="Your name" id="name" onkeyup="this.value = this.value.replace(/[^A-Za-z]/, ''); this.value.length ? go.removeAttribute('disabled') : go.setAttribute('disabled', true)" maxlength="10" autofocus="true">
+  <body onload="localStorage.getItem('name') && document.querySelector('#name').setAttribute('value', localStorage.getItem('name'))">
+    <form onsubmit="this.style.display = 'none'; try { localStorage.setItem('name', name.value); Client.start(name.value) } catch(e) { }; return false;">
+      <input placeholder="Your name" id="name" autocomplete="false" autofill="false" onkeyup="this.value = this.value.replace(/[^A-Za-z]/, ''); this.value.length ? go.removeAttribute('disabled') : go.setAttribute('disabled', true)" maxlength="10" autofocus="true">
       <input type="submit" value="Launch!" id="go" disabled>
     </form>
 
