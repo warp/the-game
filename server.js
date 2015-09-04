@@ -15,6 +15,14 @@ console.log('Running on port ' + PORT)
 
 function handler (req, res) {
   var path = '/' + (req.url.replace(/^\//, '') || 'index.html')
+
+  if (path == '/debug.json') {
+    let debug = {
+      state: game.state
+    }
+    return res.end(JSON.stringify(debug))
+  }
+
   fs.readFile(__dirname + path, function (err, data) {
     if (err) {
       res.writeHead(404);
