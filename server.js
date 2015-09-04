@@ -43,15 +43,23 @@ setInterval(function(){
 
 wss.on('connection', function (client) {
   console.log('Connection registered')
+  let ship
 
-  let ship = game.addShip(client)
+  client.on('message', function (encoded) {
+    let message = JSON.parse(encoded)
 
-  client.on('message', function (message) {
-    let state = JSON.parse(message).inputState
+    if(message.join) {
+      ship = game.addShip(client, message.join.name)
+    }
 
-    ship.thrusting = state.thrust
-    ship.left = state.left
-    ship.right = state.right
+    if(ship && message.inputState) {
+      let state = message.inputState
+
+      ship.thrusting = state.thrust
+      ship.left = state.left
+      ship.right = state.right
+    }
+
   });
 
   client.on('close', function() {
