@@ -1,16 +1,25 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-
 var _bind = Function.prototype.bind;
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var dogeImage = new Image();
-dogeImage.src = 'doge.png';
+var _inputListener = require('./input-listener');
+
+var _inputListener2 = _interopRequireDefault(_inputListener);
+
+var _rendering = require('./rendering');
+
+var _rendering2 = _interopRequireDefault(_rendering);
+
+var _stage = require('./stage');
+
+var _stage2 = _interopRequireDefault(_stage);
 
 window.Client = (function () {
   function Client(name) {
@@ -22,8 +31,8 @@ window.Client = (function () {
   _createClass(Client, [{
     key: 'start',
     value: function start() {
-      var stage = new Stage(1000, 600);
-      var input = new InputListener();
+      var stage = new _stage2['default'](1000, 600);
+      var input = new _inputListener2['default']();
       var client = new WebSocket(document.location.protocol.replace('http', 'ws') + '//' + document.location.host);
       var thrusties = [];
 
@@ -41,7 +50,7 @@ window.Client = (function () {
 
       client.onmessage = function (message) {
         var gameState = JSON.parse(message.data).state;
-        new Rendering(stage, gameState, thrusties).perform();
+        new _rendering2['default'](stage, gameState, thrusties).perform();
       };
     }
   }], [{
@@ -59,6 +68,29 @@ window.Client = (function () {
   return Client;
 })();
 
+},{"./input-listener":4,"./rendering":5,"./stage":6}],2:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var dogeImage = new Image();
+dogeImage.src = 'doge.png';
+
+exports['default'] = dogeImage;
+module.exports = exports['default'];
+
+},{}],3:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var EventStream = (function () {
   function EventStream() {
     _classCallCheck(this, EventStream);
@@ -67,16 +99,16 @@ var EventStream = (function () {
   }
 
   _createClass(EventStream, [{
-    key: 'on',
+    key: "on",
     value: function on(eventName, callback) {
       this.listeners[eventName] = this.listeners[eventName] || [];
       this.listeners[eventName].push(callback);
     }
   }, {
-    key: 'broadcast',
+    key: "broadcast",
     value: function broadcast(eventName) {
-      for (var _len2 = arguments.length, data = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        data[_key2 - 1] = arguments[_key2];
+      for (var _len = arguments.length, data = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        data[_key - 1] = arguments[_key];
       }
 
       (this.listeners[eventName] || []).forEach(function (callback) {
@@ -88,11 +120,31 @@ var EventStream = (function () {
   return EventStream;
 })();
 
+exports["default"] = EventStream;
+module.exports = exports["default"];
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _eventStream = require('./event-stream');
+
+var _eventStream2 = _interopRequireDefault(_eventStream);
+
 var InputListener = (function () {
   function InputListener() {
     _classCallCheck(this, InputListener);
 
-    this.events = new EventStream();
+    this.events = new _eventStream2['default']();
     this.state = {};
     this.bindToEvents();
   }
@@ -131,6 +183,28 @@ var InputListener = (function () {
 
   return InputListener;
 })();
+
+exports['default'] = InputListener;
+module.exports = exports['default'];
+
+},{"./event-stream":3}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _doge = require('./doge');
+
+var _doge2 = _interopRequireDefault(_doge);
 
 var Rendering = (function () {
   function Rendering(stage, gameState, thrusties) {
@@ -225,7 +299,7 @@ var Rendering = (function () {
   }, {
     key: 'drawDoge',
     value: function drawDoge(ship) {
-      this.drawImage(dogeImage, ship.x, ship.y, 96, 51, ship.rotation);
+      this.drawImage(_doge2['default'], ship.x, ship.y, 96, 51, ship.rotation);
     }
 
     // Draw image whose center is x, y
@@ -303,6 +377,20 @@ var Rendering = (function () {
   return Rendering;
 })();
 
+exports['default'] = Rendering;
+module.exports = exports['default'];
+
+},{"./doge":2}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
 var Stage = (function () {
   function Stage(width, height) {
     _classCallCheck(this, Stage);
@@ -339,5 +427,8 @@ var Stage = (function () {
 
   return Stage;
 })();
+
+exports['default'] = Stage;
+module.exports = exports['default'];
 
 },{}]},{},[1]);
