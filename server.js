@@ -33,7 +33,11 @@ var game = new Game()
 setInterval(function() {
   game.tick(timeStepInMs / 500)
   game.ships.forEach(function(ship) {
-    ship.client.send(JSON.stringify({"state": game.state}))
+    try {
+      ship.client.send(JSON.stringify({"state": game.state}))
+    } catch (e) {
+      console.log(e)
+    }
   })
 }, timeStepInMs)
 
