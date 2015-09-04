@@ -22,6 +22,7 @@ window.Client = (function () {
       var stage = new Stage(1000, 600);
       var input = new InputListener();
       var client = new WebSocket(document.location.protocol.replace('http', 'ws') + '//' + document.location.host);
+      var thrusties = [];
 
       window.addEventListener('beforeunload', function () {
         client.close();
@@ -37,7 +38,7 @@ window.Client = (function () {
 
       client.onmessage = function (message) {
         var gameState = JSON.parse(message.data).state;
-        new Rendering(stage, gameState).perform();
+        new Rendering(stage, gameState, thrusties).perform();
       };
     }
   }], [{
@@ -129,12 +130,13 @@ var InputListener = (function () {
 })();
 
 var Rendering = (function () {
-  function Rendering(stage, gameState) {
+  function Rendering(stage, gameState, thrusties) {
     _classCallCheck(this, Rendering);
 
     this.stage = stage;
     this.context = stage.context;
     this.gameState = gameState;
+    this.thrusties = thrusties;
   }
 
   _createClass(Rendering, [{
@@ -142,6 +144,7 @@ var Rendering = (function () {
     value: function perform() {
       this.erase();
       this.drawBackground();
+      this.drawThrusties();
       this.drawShips();
     }
   }, {
@@ -152,16 +155,60 @@ var Rendering = (function () {
       });
     }
   }, {
-    key: 'drawShips',
-    value: function drawShips() {
+    key: 'drawThrusties',
+    value: function drawThrusties() {
       var _this = this;
 
+      this.draw(function (context) {
+        _this.thrusties.forEach(function (_ref, index) {
+          var angle = _ref.angle;
+          var x = _ref.x;
+          var y = _ref.y;
+          var mx = _ref.mx;
+          var my = _ref.my;
+          var ttl = _ref.ttl;
+
+          _this.thrusties[index].ttl -= 0.3;
+          _this.thrusties[index].x += mx;
+          _this.thrusties[index].y += my;
+          if (ttl > 0) {
+            context.fillStyle = 'rgba(225, 0, 0, ' + ttl + ')';
+            _this.drawTriangle(x, y, 10 * ttl, angle);
+            context.fill();
+          } else {
+            _this.thrusties.splice(index, 1);
+          }
+        });
+      });
+    }
+  }, {
+    key: 'drawShips',
+    value: function drawShips() {
+      var _this2 = this;
+
       this.gameState.ships.forEach(function (ship) {
-        _this.draw(function (context) {
+        _this2.draw(function (context) {
           context.fillStyle = ship.colour;
           this.drawTriangle(ship.x, ship.y, 30, ship.rotation);
           context.fill();
           this.drawText(ship.name, ship.x, Math.max(ship.y - 25, 10), ship.colour);
+          if (ship.thrusting) {
+            var _rotatePoint = this.rotatePoint(-ship.rotation, 0, 0)([0, 10]);
+
+            var _rotatePoint2 = _slicedToArray(_rotatePoint, 2);
+
+            var mx = _rotatePoint2[0];
+            var my = _rotatePoint2[1];
+
+            this.thrusties.push({
+              angle: ship.rotation,
+              x: ship.x + mx,
+              y: ship.y + my,
+              mx: mx,
+              my: my,
+              ttl: 1
+            });
+          }
         });
       });
     }
@@ -186,18 +233,22 @@ var Rendering = (function () {
       });
     }
   }, {
+    key: 'rotatePoint',
+    value: function rotatePoint(angle, x, y) {
+      var cos = Math.cos(angle);
+      var sin = Math.sin(angle);
+      return function (_ref2) {
+        var _ref22 = _slicedToArray(_ref2, 2);
+
+        var px = _ref22[0];
+        var py = _ref22[1];
+        return [px * cos - py * sin + x, px * sin + py * cos + y];
+      };
+    }
+  }, {
     key: 'drawTriangle',
     value: function drawTriangle(x, y, size, rotation) {
-      var cos = Math.cos(-rotation);
-      var sin = Math.sin(-rotation);
-
-      var path = [[0, -size / 2], [size / 2, size / 2], [-size / 2, size / 2]].map(function (_ref) {
-        var _ref2 = _slicedToArray(_ref, 2);
-
-        var px = _ref2[0];
-        var py = _ref2[1];
-        return [px * cos - py * sin + x, px * sin + py * cos + y];
-      });
+      var path = [[0, -size / 2], [size / 2, size / 2], [-size / 2, size / 2]].map(this.rotatePoint(-rotation, x, y));
 
       this.drawPath(path);
     }
