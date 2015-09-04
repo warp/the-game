@@ -9,6 +9,9 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+var dogeImage = new Image();
+dogeImage.src = 'doge.png';
+
 window.Client = (function () {
   function Client(name) {
     _classCallCheck(this, Client);
@@ -192,6 +195,9 @@ var Rendering = (function () {
           this.drawTriangle(ship.x, ship.y, 30, ship.rotation);
           context.fill();
           this.drawText(ship.name, ship.x, Math.max(ship.y - 25, 10), ship.colour);
+          if (ship.doge) {
+            this.drawDoge(ship);
+          }
           if (ship.thrusting) {
             var _rotatePoint = this.rotatePoint(-ship.rotation, 0, 0)([0, 10]);
 
@@ -210,6 +216,13 @@ var Rendering = (function () {
             });
           }
         });
+      });
+    }
+  }, {
+    key: 'drawDoge',
+    value: function drawDoge(ship) {
+      this.draw(function (context) {
+        context.drawImage(dogeImage, ship.x, ship.y - 10, 64, 34);
       });
     }
 
