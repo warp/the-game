@@ -2,7 +2,7 @@ import http from 'http'
 import ws from 'ws'
 import fs from 'fs'
 
-import Game from './lib/game'
+import Game from './lib/server/game'
 
 const PORT = process.env.PORT || 8080
 
