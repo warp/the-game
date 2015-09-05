@@ -139,6 +139,17 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var KeyboardInput = (function () {
+  _createClass(KeyboardInput, null, [{
+    key: 'MAPPINGS',
+    get: function get() {
+      return {
+        38: 'thrust',
+        37: 'left',
+        39: 'right'
+      };
+    }
+  }]);
+
   function KeyboardInput(eventStream) {
     _classCallCheck(this, KeyboardInput);
 
@@ -150,13 +161,7 @@ var KeyboardInput = (function () {
   _createClass(KeyboardInput, [{
     key: 'keyCodeAction',
     value: function keyCodeAction(keyCode) {
-      var keyCodeToActionMappings = {
-        38: 'thrust',
-        37: 'left',
-        39: 'right'
-      };
-
-      return keyCodeToActionMappings[keyCode];
+      return KeyboardInput.MAPPINGS[keyCode];
     }
   }, {
     key: 'bindToEvents',
