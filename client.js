@@ -64,9 +64,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _inputListener = require('./input-listener');
+var _playerInput = require('./player-input');
 
-var _inputListener2 = _interopRequireDefault(_inputListener);
+var _playerInput2 = _interopRequireDefault(_playerInput);
+
+var _keyboardInput = require('./keyboard-input');
+
+var _keyboardInput2 = _interopRequireDefault(_keyboardInput);
 
 var _rendering = require('./rendering');
 
@@ -87,7 +91,7 @@ window.Client = (function () {
     key: 'start',
     value: function start() {
       var stage = new _stage2['default'](1000, 600);
-      var input = new _inputListener2['default']();
+      var input = new _playerInput2['default'](_keyboardInput2['default']);
       var client = new WebSocket(document.location.protocol.replace('http', 'ws') + '//' + document.location.host);
       var thrusties = [];
 
@@ -123,7 +127,7 @@ window.Client = (function () {
   return Client;
 })();
 
-},{"./input-listener":4,"./rendering":5,"./stage":6}],4:[function(require,module,exports){
+},{"./keyboard-input":4,"./player-input":5,"./rendering":6,"./stage":7}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -132,24 +136,18 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _eventStream = require('./event-stream');
+var KeyboardInput = (function () {
+  function KeyboardInput(eventStream) {
+    _classCallCheck(this, KeyboardInput);
 
-var _eventStream2 = _interopRequireDefault(_eventStream);
-
-var InputListener = (function () {
-  function InputListener() {
-    _classCallCheck(this, InputListener);
-
-    this.events = new _eventStream2['default']();
+    this.events = eventStream;
     this.state = {};
     this.bindToEvents();
   }
 
-  _createClass(InputListener, [{
+  _createClass(KeyboardInput, [{
     key: 'keyCodeAction',
     value: function keyCodeAction(keyCode) {
       var keyCodeToActionMappings = {
@@ -181,13 +179,62 @@ var InputListener = (function () {
     }
   }]);
 
-  return InputListener;
+  return KeyboardInput;
 })();
 
-exports['default'] = InputListener;
+exports['default'] = KeyboardInput;
 module.exports = exports['default'];
 
-},{"./event-stream":2}],5:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _eventStream = require('./event-stream');
+
+var _eventStream2 = _interopRequireDefault(_eventStream);
+
+var PlayerInput = (function () {
+  function PlayerInput() {
+    _classCallCheck(this, PlayerInput);
+
+    this.events = new _eventStream2['default']();
+    this.state = {};
+
+    for (var _len = arguments.length, inputSources = Array(_len), _key = 0; _key < _len; _key++) {
+      inputSources[_key] = arguments[_key];
+    }
+
+    this.inputSources = inputSources;
+    this.bindToEvents();
+  }
+
+  _createClass(PlayerInput, [{
+    key: 'bindToEvents',
+    value: function bindToEvents() {
+      var _this = this;
+
+      this.inputSources.forEach(function (source) {
+        return new source(_this.events);
+      });
+    }
+  }]);
+
+  return PlayerInput;
+})();
+
+exports['default'] = PlayerInput;
+module.exports = exports['default'];
+
+},{"./event-stream":2}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -380,7 +427,7 @@ var Rendering = (function () {
 exports['default'] = Rendering;
 module.exports = exports['default'];
 
-},{"./doge":1}],6:[function(require,module,exports){
+},{"./doge":1}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
