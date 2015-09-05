@@ -1,6 +1,61 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var dogeImage = new Image();
+dogeImage.src = 'doge.png';
+
+exports['default'] = dogeImage;
+module.exports = exports['default'];
+
+},{}],2:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var EventStream = (function () {
+  function EventStream() {
+    _classCallCheck(this, EventStream);
+
+    this.listeners = {};
+  }
+
+  _createClass(EventStream, [{
+    key: "on",
+    value: function on(eventName, callback) {
+      this.listeners[eventName] = this.listeners[eventName] || [];
+      this.listeners[eventName].push(callback);
+    }
+  }, {
+    key: "broadcast",
+    value: function broadcast(eventName) {
+      for (var _len = arguments.length, data = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        data[_key - 1] = arguments[_key];
+      }
+
+      (this.listeners[eventName] || []).forEach(function (callback) {
+        callback.call.apply(callback, [null].concat(data));
+      });
+    }
+  }]);
+
+  return EventStream;
+})();
+
+exports["default"] = EventStream;
+module.exports = exports["default"];
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
 var _bind = Function.prototype.bind;
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -68,62 +123,7 @@ window.Client = (function () {
   return Client;
 })();
 
-},{"./input-listener":4,"./rendering":5,"./stage":6}],2:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-var dogeImage = new Image();
-dogeImage.src = 'doge.png';
-
-exports['default'] = dogeImage;
-module.exports = exports['default'];
-
-},{}],3:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var EventStream = (function () {
-  function EventStream() {
-    _classCallCheck(this, EventStream);
-
-    this.listeners = {};
-  }
-
-  _createClass(EventStream, [{
-    key: "on",
-    value: function on(eventName, callback) {
-      this.listeners[eventName] = this.listeners[eventName] || [];
-      this.listeners[eventName].push(callback);
-    }
-  }, {
-    key: "broadcast",
-    value: function broadcast(eventName) {
-      for (var _len = arguments.length, data = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        data[_key - 1] = arguments[_key];
-      }
-
-      (this.listeners[eventName] || []).forEach(function (callback) {
-        callback.call.apply(callback, [null].concat(data));
-      });
-    }
-  }]);
-
-  return EventStream;
-})();
-
-exports["default"] = EventStream;
-module.exports = exports["default"];
-
-},{}],4:[function(require,module,exports){
+},{"./input-listener":4,"./rendering":5,"./stage":6}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -187,7 +187,7 @@ var InputListener = (function () {
 exports['default'] = InputListener;
 module.exports = exports['default'];
 
-},{"./event-stream":3}],5:[function(require,module,exports){
+},{"./event-stream":2}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -380,7 +380,7 @@ var Rendering = (function () {
 exports['default'] = Rendering;
 module.exports = exports['default'];
 
-},{"./doge":2}],6:[function(require,module,exports){
+},{"./doge":1}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -431,4 +431,4 @@ var Stage = (function () {
 exports['default'] = Stage;
 module.exports = exports['default'];
 
-},{}]},{},[1]);
+},{}]},{},[3]);
